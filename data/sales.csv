@@ -1,0 +1,11 @@
+OrderID,Product,Category,Sales,Profit,Quantity,Region
+1,Laptop,Technology,800,120,1,East
+2,Chair,Furniture,250,50,2,West
+3,Phone,Technology,600,90,1,North
+4,Table,Furniture,400,70,1,South
+5,Printer,Technology,300,45,2,East
+6,Monitor,Technology,450,60,1,West
+7,Sofa,Furniture,900,150,1,South
+8,Desk,Furniture,350,55,1,East
+9,Keyboard,Technology,120,25,3,North
+10,Mouse,Technology,80,18,4,West
