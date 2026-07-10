@@ -141,3 +141,6 @@ python src/visualization.py
 ## Author
 
 Your Name
+## Dashboard Preview
+
+![Sales Dashboard](screenshots/sales.png)
