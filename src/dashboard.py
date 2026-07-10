@@ -1,88 +1,95 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import plotly.express as px
 
-# Page title
-st.set_page_config(page_title="Sales Dashboard", layout="wide")
 
+# Page configuration
+st.set_page_config(
+    page_title="Sales Dashboard",
+    layout="wide"
+)
+
+
+# Title
 st.title("📊 Sales Analysis Dashboard")
 
-# Load data
+
+# Load dataset
 df = pd.read_csv("data/sales.csv")
 
+
 # Show data
-st.header("Sales Dataset")
+st.subheader("Sales Data")
 st.dataframe(df)
 
-# KPI Metrics
+
+# Calculate KPIs
 total_sales = df["Sales"].sum()
 total_profit = df["Profit"].sum()
 total_orders = len(df)
 average_sales = df["Sales"].mean()
 
+
+# KPI cards
 col1, col2, col3, col4 = st.columns(4)
 
-col1.metric("Total Sales", f"${total_sales}")
-col2.metric("Total Profit", f"${total_profit}")
-col3.metric("Orders", total_orders)
-col4.metric("Average Sale", f"${average_sales:.2f}")
+col1.metric("Total Sales", total_sales)
+col2.metric("Total Profit", total_profit)
+col3.metric("Total Orders", total_orders)
+col4.metric("Average Sale", round(average_sales, 2))
+
 
 st.divider()
+
 
 # Sales by Category
 st.subheader("Sales by Category")
 
-sales_category = df.groupby("Category")["Sales"].sum()
-
-fig, ax = plt.subplots(figsize=(6,4))
-
-sns.barplot(
-    x=sales_category.index,
-    y=sales_category.values,
-    hue=sales_category.index,
-    palette="viridis",
-    legend=False,
-    ax=ax
+category_sales = (
+    df.groupby("Category")["Sales"]
+    .sum()
+    .reset_index()
 )
 
-ax.set_xlabel("Category")
-ax.set_ylabel("Sales")
-
-st.pyplot(fig)
-
-# Profit by Region
-st.subheader("Profit by Region")
-
-profit_region = df.groupby("Region")["Profit"].sum()
-
-fig2, ax2 = plt.subplots(figsize=(6,6))
-
-ax2.pie(
-    profit_region,
-    labels=profit_region.index,
-    autopct="%1.1f%%",
-    startangle=90
+fig1 = px.bar(
+    category_sales,
+    x="Category",
+    y="Sales",
+    color="Category",
+    title="Sales by Category"
 )
 
-st.pyplot(fig2)
+st.plotly_chart(fig1)
 
-# Profit Distribution
-st.subheader("Profit Distribution")
 
-fig3, ax3 = plt.subplots(figsize=(8,4))
+# Sales by Region
+st.subheader("Sales by Region")
 
-sns.histplot(df["Profit"], bins=5, color="green", ax=ax3)
+region_sales = (
+    df.groupby("Region")["Sales"]
+    .sum()
+    .reset_index()
+)
 
-st.pyplot(fig3)
+fig2 = px.pie(
+    region_sales,
+    names="Region",
+    values="Sales",
+    title="Sales Distribution by Region"
+)
 
-# Summary Table
+st.plotly_chart(fig2)
+
+
+# Summary
 st.subheader("Category Summary")
 
-summary = df.groupby("Category").agg({
-    "Sales":"sum",
-    "Profit":"sum",
-    "Quantity":"sum"
-})
+summary = df.groupby("Category").agg(
+    {
+        "Sales": "sum",
+        "Profit": "sum",
+        "Quantity": "sum"
+    }
+)
 
 st.dataframe(summary)
